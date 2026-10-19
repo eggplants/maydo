@@ -14,6 +14,8 @@ plugins {
 // versionName 1.2.3 and versionCode 1. Commits past the tag keep its versionCode and get git
 // describe's suffix in the name (1.2.3-4-gabcdef0, -dirty with uncommitted changes); no tag at
 // all is 0.0.0 and 1. The in-app updater compares versionCodes, so bump it on every tag.
+// F-Droid edits the checkout before it builds, so its recipe passes -Pmaydo.noDirty to keep the
+// name equal to the tag's.
 val dirtyFlag = if (providers.gradleProperty("maydo.noDirty").isPresent) null else "--dirty"
 
 val gitDescribe: String = runCatching {
@@ -41,6 +43,22 @@ val gitVersionCode: Int =
         code.toInt().also { require(it >= 1) { "versionCode must be 1 or more: $gitDescribe" } }
     } ?: 1
 
+/**
+ * F-Droid's ABIs, numbered for their versionCodes. F-Droid wants one APK per ABI, each with a
+ * versionCode of its own: -Pmaydo.abi=arm64-v8a builds that ABI's alone, with 10 times the tag's
+ * versionCode plus its number here, so that a 64-bit device prefers its own ABI.
+ */
+val fdroidAbiNumbers = mapOf("armeabi-v7a" to 1, "arm64-v8a" to 2, "x86" to 3, "x86_64" to 4)
+
+val singleAbi: String? =
+    providers.gradleProperty("maydo.abi").orNull?.also {
+        require(it in fdroidAbiNumbers) { "maydo.abi must be one of ${fdroidAbiNumbers.keys}: $it" }
+    }
+
+// F-Droid installs updates itself: -Pmaydo.noSelfUpdate leaves out the in-app updater, along with
+// the permission to install packages (src/noSelfUpdate/AndroidManifest.xml).
+val selfUpdate = !providers.gradleProperty("maydo.noSelfUpdate").isPresent
+
 val ytdlpVersion = providers.gradleProperty("maydo.ytdlp.version").get()
 val ytdlpSha256 = providers.gradleProperty("maydo.ytdlp.sha256").get()
 
@@ -58,29 +76,32 @@ android {
     compileSdk {
         version = release(37)
     }
-    // Builds the yt-dlp launcher (native/ytdlp.c); the same NDK as F-Droid uses.
+    // Builds the yt-dlp launcher (native/ytdlp.c); the same NDK as the F-Droid recipe asks for.
     ndkVersion = "28.2.13676358"
 
     defaultConfig {
         applicationId = "io.github.eggplants.maydo"
         minSdk = 26
         targetSdk = 37
-        versionCode = gitVersionCode
+        versionCode =
+            singleAbi?.let { gitVersionCode * 10 + fdroidAbiNumbers.getValue(it) } ?: gitVersionCode
         versionName = gitVersionName
 
         buildConfigField("String", "YTDLP_VERSION", "\"$ytdlpVersion\"")
         // Where the app looks for its own updates.
         buildConfigField("String", "GITHUB_REPOSITORY", "\"eggplants/maydo\"")
+        buildConfigField("boolean", "SELF_UPDATE", "$selfUpdate")
     }
 
     // One APK per ABI, each a quarter of the universal one, which is built too. All of them
     // share the versionCode: the in-app updater picks the asset for the device's ABI by name.
+    // With maydo.abi, only that ABI's APK.
     splits {
         abi {
             isEnable = true
             reset()
-            include(*abiTargets.keys.toTypedArray())
-            isUniversalApk = true
+            include(*(singleAbi?.let { arrayOf(it) } ?: abiTargets.keys.toTypedArray()))
+            isUniversalApk = singleAbi == null
         }
     }
 
@@ -260,7 +281,7 @@ androidComponents {
                 source.set(rootProject.file("native/ytdlp.c"))
                 this.ndkDirectory.set(ndkDirectory)
                 ndkVersion.set(android.ndkVersion)
-                targets.set(abiTargets)
+                targets.set(abiTargets.filterKeys { singleAbi == null || it == singleAbi })
                 minSdk.set(variant.minSdk.apiLevel)
             }
         variant.sources.jniLibs?.addGeneratedSourceDirectory(
@@ -273,6 +294,9 @@ androidComponents {
                 digest.set(ytdlpSha256)
             }
         variant.sources.assets?.addGeneratedSourceDirectory(ytdlp, DownloadYtdlp::outputDir)
+        if (!selfUpdate) {
+            variant.sources.manifests.addStaticManifestFile("src/noSelfUpdate/AndroidManifest.xml")
+        }
     }
 }
 

@@ -112,8 +112,24 @@ such a tag runs `.github/workflows/release.yml`, which signs with the `MAYDO_*` 
 attaches `maydo-<version>-<abi>.apk` (and `-universal.apk`); `Versions.pickApk` relies on those
 names. Actions are pinned to full commit SHAs (`mise run pin`).
 
-The store listing is in `fastlane/metadata/android/<locale>/`. There is no F-Droid recipe: the
-self-updater and the prebuilt libmpv would not pass.
+### F-Droid
+
+The store listing is in `fastlane/metadata/android/<locale>/` (en-US and ja-JP), which F-Droid
+reads from the tagged commit. `fdroid/metadata/io.github.eggplants.maydo.yml` is the recipe for
+fdroiddata: one build per ABI, each with Gradle properties that the GitHub releases never set:
+
+- `maydo.abi=<abi>` builds that ABI's APK alone, with the versionCode `10 * <tag's code> + n`
+  (armeabi-v7a 1, arm64-v8a 2, x86 3, x86_64 4; the recipe's `VercodeOperation`).
+- `maydo.noSelfUpdate` leaves out the in-app updater (`BuildConfig.SELF_UPDATE`) and, through
+  `src/noSelfUpdate/AndroidManifest.xml`, `REQUEST_INSTALL_PACKAGES`. yt-dlp still updates; the
+  recipe's `NonFreeNet` says so.
+- `maydo.noDirty`, because F-Droid edits the checkout and `-dirty` would change the versionName.
+
+F-Droid looks up a build's changelog by its own versionCode, so a tag with code `c` needs
+`changelogs/<10c+1>.txt` to `<10c+4>.txt` next to `<c>.txt`, with the same text (500 characters
+at most). Prebuilt native code from Maven is accepted as in other apps there (mpvKt's libmpv,
+Seal's youtubedl-android); the yt-dlp zipapp is downloaded by Gradle and checked against its
+SHA-256. Dependencies must stay free software: no Google Play services or Firebase.
 
 ## Testing conventions
 

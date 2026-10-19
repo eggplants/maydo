@@ -1,6 +1,7 @@
 package io.github.eggplants.maydo.core
 
 import android.util.Log
+import io.github.eggplants.maydo.BuildConfig
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -65,10 +66,10 @@ class UpdateManager(
         return release != null && Versions.compareYtdlp(release.tagName, installed) > 0
     }
 
-    /** Looks up the newest releases of both. */
+    /** Looks up the newest releases of both, or of yt-dlp alone without the in-app updater. */
     fun checkAll() {
         checkYtdlp()
-        checkApp()
+        if (BuildConfig.SELF_UPDATE) checkApp()
     }
 
     fun checkYtdlp() {

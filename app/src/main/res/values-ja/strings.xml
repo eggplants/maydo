@@ -86,6 +86,7 @@
     <string name="settings_app_version">バージョン</string>
     <string name="settings_check_updates">起動時に更新を確認</string>
     <string name="settings_check_updates_summary">Maydo と yt-dlp の新しいリリースを GitHub で探します</string>
+    <string name="settings_check_updates_summary_ytdlp">yt-dlp の新しいリリースを GitHub で探します</string>
     <string name="settings_app_update_available">Maydo %1$s があります (%2$s)</string>
     <string name="settings_app_up_to_date">Maydo は最新です</string>
     <string name="settings_app_install">%1$s をインストール</string>

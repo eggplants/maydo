@@ -87,6 +87,7 @@
     <string name="settings_app_version">Version</string>
     <string name="settings_check_updates">Check for updates on start</string>
     <string name="settings_check_updates_summary">Look for new releases of Maydo and yt-dlp on GitHub</string>
+    <string name="settings_check_updates_summary_ytdlp">Look for new releases of yt-dlp on GitHub</string>
     <string name="settings_app_update_available">Maydo %1$s is available (%2$s)</string>
     <string name="settings_app_up_to_date">Maydo is up to date</string>
     <string name="settings_app_install">Install %1$s</string>

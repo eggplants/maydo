@@ -49,6 +49,8 @@ import io.github.eggplants.maydo.AppContainer
 import io.github.eggplants.maydo.BuildConfig
 import io.github.eggplants.maydo.R
 import io.github.eggplants.maydo.core.RuntimeState
+import io.github.eggplants.maydo.core.UpdateManager
+import io.github.eggplants.maydo.core.UpdateState
 import io.github.eggplants.maydo.core.UpdateStep
 import io.github.eggplants.maydo.core.VideoQuality
 import kotlinx.coroutines.launch
@@ -182,41 +184,17 @@ fun SettingsScreen(
             )
             SwitchItem(
                 R.string.settings_check_updates,
-                R.string.settings_check_updates_summary,
+                if (BuildConfig.SELF_UPDATE) {
+                    R.string.settings_check_updates_summary
+                } else {
+                    R.string.settings_check_updates_summary_ytdlp
+                },
                 settings.checkUpdates,
             ) {
                 scope.launch { container.settings.setCheckUpdates(it) }
             }
-            val app = updates.app
-            UpdateBlock(
-                step = updates.appStep,
-                status =
-                    when {
-                        app != null ->
-                            stringResource(
-                                R.string.settings_app_update_available,
-                                app.versionName,
-                                Formatter.formatShortFileSize(context, app.apk.size),
-                            )
-                        updates.appChecked -> stringResource(R.string.settings_app_up_to_date)
-                        else -> null
-                    },
-                actionLabel =
-                    app?.let { stringResource(R.string.settings_app_install, it.versionName) },
-                onAction = container.updates::installApp,
-                onCheck = container.updates::checkApp,
-            )
-            app?.release
-                ?.body
-                ?.takeIf { it.isNotBlank() }
-                ?.let { notes ->
-                    Text(
-                        notes.trim(),
-                        Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 12,
-                    )
-                }
+            // F-Droid's builds leave updating the app to F-Droid.
+            if (BuildConfig.SELF_UPDATE) AppUpdate(container.updates, updates)
             ListItem(
                 headlineContent = { Text(stringResource(R.string.settings_source)) },
                 supportingContent = { Text(APP_REPOSITORY) },
@@ -268,6 +246,41 @@ fun SettingsScreen(
             },
         )
     }
+}
+
+/** The in-app updater's part of the settings: the newest release, its notes and its install. */
+@Composable
+private fun AppUpdate(manager: UpdateManager, updates: UpdateState) {
+    val context = LocalContext.current
+    val app = updates.app
+    UpdateBlock(
+        step = updates.appStep,
+        status =
+            when {
+                app != null ->
+                    stringResource(
+                        R.string.settings_app_update_available,
+                        app.versionName,
+                        Formatter.formatShortFileSize(context, app.apk.size),
+                    )
+                updates.appChecked -> stringResource(R.string.settings_app_up_to_date)
+                else -> null
+            },
+        actionLabel = app?.let { stringResource(R.string.settings_app_install, it.versionName) },
+        onAction = manager::installApp,
+        onCheck = manager::checkApp,
+    )
+    app?.release
+        ?.body
+        ?.takeIf { it.isNotBlank() }
+        ?.let { notes ->
+            Text(
+                notes.trim(),
+                Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 12,
+            )
+        }
 }
 
 /**
