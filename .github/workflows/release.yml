@@ -1,0 +1,89 @@
+name: release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+-[0-9]+"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  MISE_EXPERIMENTAL: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The version is read from the tags with git describe.
+          fetch-depth: 0
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+      - name: Check the tag
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-[0-9]+$ ]] || {
+            echo "::error::$TAG is not v<versionName>-<versionCode>"
+            exit 1
+          }
+      - name: Decode the release key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.MAYDO_KEYSTORE_BASE64 }}
+        run: |
+          [[ -n "$KEYSTORE_BASE64" ]] || {
+            echo "::error::The MAYDO_KEYSTORE_BASE64 secret is not set"
+            exit 1
+          }
+          # Outside the checkout, so git describe does not report -dirty.
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          echo "MAYDO_KEYSTORE_FILE=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+      - name: Install NDK r28c
+        # Gradle builds the yt-dlp launcher (native/ytdlp.c) with it.
+        run: |
+          [[ -d "$ANDROID_HOME/ndk/28.2.13676358" ]] ||
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;28.2.13676358" >/dev/null
+      - name: Build
+        env:
+          MAYDO_KEYSTORE_PASSWORD: ${{ secrets.MAYDO_KEYSTORE_PASSWORD }}
+          MAYDO_KEY_ALIAS: ${{ secrets.MAYDO_KEY_ALIAS }}
+          MAYDO_KEY_PASSWORD: ${{ secrets.MAYDO_KEY_PASSWORD }}
+        run: ./gradlew test assembleRelease
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="${TAG#v}"
+          version="${version%-*}"
+          # maydo-<version>-<abi>.apk: the in-app updater picks the one for the device's ABI
+          # by this suffix, and the universal one when there is none.
+          assets=()
+          for apk in app/build/outputs/apk/release/app-*-release.apk; do
+            abi="${apk##*/app-}"
+            abi="${abi%-release.apk}"
+            out="maydo-$version-$abi.apk"
+            cp "$apk" "$out"
+            assets+=("$out")
+          done
+          sha256sum "${assets[@]}" > SHA256SUMS
+          # R8's mapping, to read the stack traces of this obfuscated build (retrace), gzipped
+          # since it is tens of megabytes.
+          mapping="maydo-$version-mapping.txt.gz"
+          gzip -9c app/build/outputs/mapping/release/mapping.txt > "$mapping"
+          gh release create "$TAG" "${assets[@]}" SHA256SUMS "$mapping" \
+            --title "$TAG" --generate-notes --verify-tag
+      - if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks"

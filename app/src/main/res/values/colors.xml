@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="seed">#FFF5F6F6</color>
+    <color name="background_dark">#FF0F1111</color>
+    <color name="icon_background">#FF1B1E1E</color>
+    <color name="icon_foreground">#FFF5F6F6</color>
+</resources>

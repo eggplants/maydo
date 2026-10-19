@@ -1,0 +1,72 @@
+[tools]
+"aqua:azu/dockerfile-pin" = "latest"
+claude = "latest"
+java = "temurin-21"
+ktlint = "latest"
+# A bare jar: run it with `java -jar`, as {{vars.ktfmt}} does.
+"aqua:Kotlin/ktfmt" = "latest"
+pinact = "latest"
+usage = "latest"
+
+[vars]
+# Settings come from .editorconfig. Pass --dry-run --set-exit-if-changed to check.
+ktfmt = """git ls-files -z --cached --others --exclude-standard '*.kt' '*.kts' | xargs -0 \
+java -jar "$(mise where aqua:Kotlin/ktfmt)/ktfmt" --kotlinlang-style --enable-editorconfig --quiet"""
+
+[tasks.build]
+description = "Assemble the debug APKs (needs NDK r28c for the yt-dlp launcher)"
+run = "./gradlew assembleDebug"
+
+[tasks."build:release"]
+description = "Assemble the release APKs signed with release.jks and the passwords in .env"
+run = '''
+MAYDO_KEYSTORE_FILE="$PWD/release.jks" ./gradlew assembleRelease
+'''
+env._.file = ".env"
+
+[tasks.test]
+description = "Run JVM unit tests"
+run = "./gradlew test"
+
+[tasks.format]
+description = "Format Kotlin sources with ktlint, then ktfmt"
+alias = "fmt"
+# ktfmt runs last, so the layout is always its own.
+run = ["ktlint --format --relative --log-level=warn", "{{vars.ktfmt}}"]
+
+[tasks."lint:ktlint"]
+description = "Lint Kotlin sources with ktlint"
+run = "ktlint --relative --log-level=warn"
+
+[tasks."lint:ktfmt"]
+description = "Check that Kotlin sources are formatted with ktfmt"
+run = "{{vars.ktfmt}} --dry-run --set-exit-if-changed"
+
+[tasks."lint:kt"]
+description = "Lint Kotlin sources with ktlint and ktfmt"
+depends = ["lint:ktlint", "lint:ktfmt"]
+
+[tasks."lint:android"]
+description = "Run Android Lint"
+run = "./gradlew lint"
+
+[tasks.lint]
+description = "Run every linter"
+depends = ["lint:kt", "lint:android"]
+
+[tasks.pin]
+description = "Pin GitHub Actions to full commit SHAs"
+run = "pinact run"
+
+[tasks."pin:check"]
+description = "Verify GitHub Actions are pinned to full commit SHAs"
+run = "pinact run --check --verify-comment"
+
+[tasks.pre-commit]
+description = "Run checks on pre-commit"
+depends = ["format"]
+
+[tasks.ci]
+description = "Run CI checks"
+depends = ["lint:kt"]
+run = "./gradlew lint test assembleDebug"

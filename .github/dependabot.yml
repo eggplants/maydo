@@ -1,0 +1,23 @@
+version: 2
+updates:
+  # Root build scripts and the version catalog (gradle/libs.versions.toml).
+  # The Gradle wrapper (gradle/wrapper/gradle-wrapper.properties) is covered here too.
+  - package-ecosystem: gradle
+    directories:
+      - /
+      - /app
+    schedule:
+      interval: monthly
+    groups:
+      dependencies:
+        dependency-type: production
+      dev-dependencies:
+        dependency-type: development
+    cooldown:
+      default-days: 7
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7

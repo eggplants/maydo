@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- libmpv's surface under the Compose controls. The surface stays hidden until mpv is set up:
+     BaseMPVView only notices a surface created after it was initialized. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <io.github.eggplants.maydo.player.MpvView
+        android:id="@+id/player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/controls"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

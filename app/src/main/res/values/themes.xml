@@ -1,0 +1,10 @@
+<resources>
+    <!-- Only what shows before Compose draws: the window background. -->
+    <style name="Theme.Maydo" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/seed</item>
+    </style>
+
+    <style name="Theme.Maydo.Player" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+</resources>

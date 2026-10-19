@@ -1,0 +1,14 @@
+Maydo は <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> を内蔵した、<a href="https://mpv.io/">mpv</a> ベースの動画プレーヤーです。
+
+動画や音声のファイルを開くほか、Web ページの URL を渡すと yt-dlp がページからストリームを取り出し、mpv で再生します。YouTube をはじめ yt-dlp が対応する数千のサイトで使えます。
+
+<ul>
+<li>URL の貼り付け、検索ワードの入力、ブラウザなど他のアプリからの共有で再生</li>
+<li>端末内のファイルを開き、履歴から再生し直し</li>
+<li>画質の上限、ハードウェアデコード、映像・音声・字幕トラック、再生速度</li>
+<li>ピクチャー イン ピクチャー</li>
+<li>yt-dlp を設定画面から GitHub のリリースで更新 (APK の更新は不要)</li>
+<li>Maydo 自体も GitHub のリリースから更新</li>
+<li>mpv.conf と yt-dlp の設定ファイルの編集</li>
+<li>英語と日本語の UI</li>
+</ul>
