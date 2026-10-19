@@ -1,0 +1,5 @@
+First release.
+
+- mpv with yt-dlp built in
+- yt-dlp updates from GitHub in the settings
+- In-app updates from GitHub releases

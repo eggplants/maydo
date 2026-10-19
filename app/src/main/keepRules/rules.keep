@@ -1,0 +1,6 @@
+# libmpv's JNI code finds MPVLib's callbacks and MPVNode's constructors by name.
+-keep class is.xyz.mpv.** { *; }
+
+# Optional codecs of Commons Compress. YtdlpRuntime reads only youtubedl-android's deflated zip.
+-dontwarn com.github.luben.zstd.**
+-dontwarn org.tukaani.xz.**

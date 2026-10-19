@@ -1,0 +1,1 @@
+mpv with yt-dlp built in: play videos, files and web pages

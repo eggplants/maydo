@@ -1,0 +1,14 @@
+Maydo is a video player built on <a href="https://mpv.io/">mpv</a> that comes with <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a>.
+
+Open a video or audio file, or give it the URL of a web page: yt-dlp finds the stream in the page and mpv plays it, from YouTube and the thousands of other sites yt-dlp supports.
+
+<ul>
+<li>Paste a URL, type search words, or share a link from a browser or any other app</li>
+<li>Open local files, and play them again from the history</li>
+<li>Quality limit, hardware decoding, audio, video and subtitle tracks, playback speed</li>
+<li>Picture-in-picture</li>
+<li>Update yt-dlp from its GitHub releases in the settings, without a new APK</li>
+<li>Update Maydo itself from its GitHub releases</li>
+<li>Edit mpv.conf and yt-dlp's config file</li>
+<li>English and Japanese UI</li>
+</ul>

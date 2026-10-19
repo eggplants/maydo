@@ -1,0 +1,91 @@
+<resources>
+    <string name="player_label">Maydo で再生</string>
+
+    <string name="back">戻る</string>
+    <string name="close">閉じる</string>
+    <string name="cancel">キャンセル</string>
+    <string name="retry">再試行</string>
+    <string name="save">保存</string>
+    <string name="paste">貼り付け</string>
+    <string name="clear">消去</string>
+    <string name="settings">設定</string>
+
+    <string name="home_input_label">URL または検索ワード</string>
+    <string name="home_input_hint">https://…</string>
+    <string name="home_play">再生</string>
+    <string name="home_open_file">ファイルを開く</string>
+    <string name="home_history">履歴</string>
+    <string name="home_history_clear">すべて消去</string>
+    <string name="home_history_remove">履歴から削除</string>
+    <string name="home_runtime_failed">yt-dlp を準備できませんでした</string>
+    <string name="home_app_update">Maydo %1$s があります</string>
+    <string name="home_ytdlp_update">yt-dlp %1$s があります</string>
+    <string name="home_update_hint">設定から更新できます</string>
+
+    <string name="player_nothing_to_play">再生するものがありません</string>
+    <string name="player_preparing">yt-dlp を準備しています…</string>
+    <string name="player_resolving">yt-dlp でストリームを取得しています…</string>
+    <string name="player_loading">読み込んでいます…</string>
+    <string name="player_failed">再生できませんでした</string>
+    <string name="player_failed_generic">mpv で開けず、yt-dlp でも再生できるものが見つかりませんでした。</string>
+    <string name="player_play">再生</string>
+    <string name="player_pause">一時停止</string>
+    <string name="player_back10">10 秒戻る</string>
+    <string name="player_forward10">10 秒進む</string>
+    <string name="player_tracks">トラック</string>
+    <string name="player_tracks_video">映像</string>
+    <string name="player_tracks_audio">音声</string>
+    <string name="player_tracks_sub">字幕</string>
+    <string name="player_tracks_off">オフ</string>
+    <string name="player_speed">再生速度</string>
+    <string name="player_rotate">回転</string>
+    <string name="player_pip">ピクチャー イン ピクチャー</string>
+
+    <string name="settings_playback">再生</string>
+    <string name="settings_quality">画質</string>
+    <string name="quality_best">最高</string>
+    <string name="quality_2160">2160p まで</string>
+    <string name="quality_1440">1440p まで</string>
+    <string name="quality_1080">1080p まで</string>
+    <string name="quality_720">720p まで</string>
+    <string name="quality_480">480p まで</string>
+    <string name="quality_360">360p まで</string>
+    <string name="quality_audio">音声のみ</string>
+    <string name="settings_hwdec">ハードウェアデコード</string>
+    <string name="settings_hwdec_summary">MediaCodec でデコードし、できないものはソフトウェアでデコードします</string>
+    <string name="settings_ytdl_first">yt-dlp を先に使う</string>
+    <string name="settings_ytdl_first_summary">Web の URL はすべて mpv より先に yt-dlp に渡します。オフにすると mpv で開けないものだけを渡します</string>
+    <string name="settings_history">履歴を残す</string>
+    <string name="settings_history_summary">再生したものをホーム画面に並べます</string>
+    <string name="settings_mpv_conf">mpv.conf</string>
+    <string name="settings_mpv_conf_summary">プレーヤーの起動時に読み込む mpv のオプション</string>
+
+    <string name="settings_ytdlp">yt-dlp</string>
+    <string name="settings_ytdlp_version">使用中のバージョン</string>
+    <string name="settings_ytdlp_conf">yt-dlp の設定ファイル</string>
+    <string name="settings_ytdlp_conf_summary">yt-dlp が毎回読み込むオプション</string>
+    <string name="settings_ytdlp_releases">リリース一覧</string>
+    <string name="settings_update_available">%1$s があります</string>
+    <string name="settings_up_to_date">最新です (最新版: %1$s)</string>
+    <string name="settings_update_to">%1$s に更新</string>
+    <string name="settings_check">更新を確認</string>
+    <string name="settings_checking">確認しています…</string>
+    <string name="settings_downloading">ダウンロード中 %1$s / %2$s</string>
+    <string name="settings_installing">インストールしています…</string>
+
+    <string name="settings_app">アプリ</string>
+    <string name="settings_app_version">バージョン</string>
+    <string name="settings_check_updates">起動時に更新を確認</string>
+    <string name="settings_check_updates_summary">Maydo と yt-dlp の新しいリリースを GitHub で探します</string>
+    <string name="settings_app_update_available">Maydo %1$s があります (%2$s)</string>
+    <string name="settings_app_up_to_date">Maydo は最新です</string>
+    <string name="settings_app_install">%1$s をインストール</string>
+    <string name="settings_install_permission">更新のインストールを許可</string>
+    <string name="settings_install_permission_text">Maydo が自身を更新するには、アプリのインストールを許可する必要があります。許可してから戻り、もう一度インストールしてください。</string>
+    <string name="settings_install_permission_open">設定を開く</string>
+    <string name="settings_source">ソースコード</string>
+    <string name="settings_licenses">オープンソースライセンス</string>
+
+    <string name="config_saved">保存しました。次の動画から反映されます。</string>
+    <string name="config_hint">1 行に 1 オプション。# で始まる行はコメントです。</string>
+</resources>
