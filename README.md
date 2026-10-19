@@ -93,6 +93,8 @@ in-app updater picks the one for the device's ABI by that name.
 
 ## License
 
-[MIT](LICENSE). `app/src/main/assets/ytdl_hook.lua` is a modified copy of mpv's
+[MIT](LICENSE)
+
+`app/src/main/assets/ytdl_hook.lua` is a modified copy of mpv's
 [ytdl_hook.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/ytdl_hook.lua), under
 mpv's LGPL-2.1-or-later.
