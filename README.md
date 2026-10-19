@@ -1,18 +1,13 @@
 # <img src="fastlane/metadata/android/en-US/images/icon.png" alt="logo" width="48" align="top"> <ins>Maydo</ins>
 
-[![ci](
-  <https://github.com/eggplants/maydo/actions/workflows/ci.yml/badge.svg>
-)](
-  <https://github.com/eggplants/maydo/actions/workflows/ci.yml>
-) [![release](
-  <https://github.com/eggplants/maydo/actions/workflows/release.yml/badge.svg>
-)](
-  <https://github.com/eggplants/maydo/actions/workflows/release.yml>
-) [![GitHub Release](
-  <https://img.shields.io/github/v/release/eggplants/maydo?color=white>
-)](
-  <https://github.com/eggplants/maydo/releases/latest>
-)
+[![ci][ci-badge]][ci] [![release][release-badge]][release] [![GitHub Release][gh-release-badge]][gh-release]
+
+[ci-badge]: <https://github.com/eggplants/maydo/actions/workflows/ci.yml/badge.svg>
+[ci]: <https://github.com/eggplants/maydo/actions/workflows/ci.yml>
+[release-badge]: <https://github.com/eggplants/maydo/actions/workflows/release.yml/badge.svg>
+[release]: <https://github.com/eggplants/maydo/actions/workflows/release.yml>
+[gh-release-badge]: <https://img.shields.io/github/v/release/eggplants/maydo?color=white>
+[gh-release]: <https://github.com/eggplants/maydo/releases/latest>
 
 An Android video player built on [mpv] with [yt-dlp] inside: open a file, or give it the URL of a
 web page, and yt-dlp finds the stream that mpv plays.
